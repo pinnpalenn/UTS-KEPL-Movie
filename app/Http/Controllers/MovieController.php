@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Movie;
 use App\Models\Category;
+use App\Services\MovieService;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,9 +14,16 @@ use Illuminate\Support\Facades\Validator;
 class MovieController extends Controller
 {
 
+    protected $movieService;
+
+    public function __construct(MovieService $movieService)
+    {
+        $this->movieService = $movieService;
+    }
+
     public function index()
     {
-        $movies = $this->getFilteredMovies();
+        $movies = $this->movieService->getFilteredMovies(request('search'));
         return view('homepage', compact('movies'));
     }
 

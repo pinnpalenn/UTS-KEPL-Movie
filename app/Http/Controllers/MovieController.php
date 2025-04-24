@@ -15,15 +15,22 @@ class MovieController extends Controller
 
     public function index()
     {
-
-        $query = Movie::latest();
-        if (request('search')) {
-            $query->where('judul', 'like', '%' . request('search') . '%')
-                ->orWhere('sinopsis', 'like', '%' . request('search') . '%');
-        }
-        $movies = $query->paginate(6)->withQueryString();
+        $movies = $this->getFilteredMovies();
         return view('homepage', compact('movies'));
     }
+
+    private function getFilteredMovies()
+    {
+        $query = Movie::latest();
+
+        if (request('search')) {
+            $query->where('judul', 'like', '%' . request('search') . '%')
+                  ->orWhere('sinopsis', 'like', '%' . request('search') . '%');
+        }
+
+        return $query->paginate(6)->withQueryString();
+    }
+
 
     public function detail($id)
     {
